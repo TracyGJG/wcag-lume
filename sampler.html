@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WCAG-Lume</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+      th {
+        padding: 0.5rem;
+      }
+      div {
+        text-align: center;
+        padding: 0.5rem;
+        margin: 0.5rem;
+        border: 1px solid #777;
+        min-width: 5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>WCAG-Lume Sampler</h1>
+    <article></article>
+
+    <script type="module">
+      import { colLume, relLume } from './wcag-lume.js';
+
+      const target = document.querySelector('article');
+      const testData = [
+        'Test<br>Colours',
+        '#000',
+        '#f00',
+        '#0f0',
+        '#00f',
+        '#fff',
+      ];
+
+      target.innerHTML = `
+      <table border="1">
+        ${testData
+          .map(
+            (test, row) => `
+        <tr>
+          ${
+            row
+              ? testData
+                  .map((_test, col) =>
+                    col
+                      ? cell(test, _test)
+                      : `<th>${test}<br>Lum: ${colLume(test)}</th>`
+                  )
+                  .join('')
+              : testData.map(_test => `<th>${_test}</th>`).join('')
+          }
+        </tr>`
+          )
+          .join('')}
+      </table>`;
+
+      function cell(foreground, background) {
+        const rel = relLume(foreground, background);
+        const col = colLume(background) < 0.5 ? 'white' : 'black';
+        return `<td>
+          <div style="background-color: ${background}; color: ${col}">${rel.relLum.toFixed(
+          4
+        )}<br>${rel.wcag}</div>
+        </td>`;
+      }
+    </script>
+  </body>
+</html>
